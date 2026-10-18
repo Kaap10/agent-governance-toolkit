@@ -133,3 +133,59 @@ class TestSessionIsolationFailClosed:
         mgr.create_scope("session-1", "did:mesh:agent-1")
         mgr.remove_scope("session-1")
         assert mgr.check_access("session-1", "/var/agt/sessions/session-1/data") is False
+
+    def test_path_traversal_with_relative_segments_denied(self):
+        mgr = SessionIsolationManager()
+        mgr.create_scope("session-1", "did:mesh:agent-1")
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-1/../session-2/secret.json")
+            is False
+        )
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-1/../../etc/passwd")
+            is False
+        )
+
+    def test_sibling_prefix_collision_denied(self):
+        mgr = SessionIsolationManager()
+        mgr.create_scope("session-1", "did:mesh:agent-1")
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-1-extra/data.json")
+            is False
+        )
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-10/data.json")
+            is False
+        )
+
+    def test_nested_subdirectories_allowed(self):
+        mgr = SessionIsolationManager()
+        mgr.create_scope("session-1", "did:mesh:agent-1")
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-1/sub/dir/output.json")
+            is True
+        )
+        assert mgr.check_access("session-1", "/var/agt/sessions/session-1") is True
+
+    def test_granted_session_relative_traversal_denied(self):
+        mgr = SessionIsolationManager()
+        mgr.create_scope("session-1", "did:mesh:agent-1", isolation_level=IsolationLevel.READ_COMMITTED)
+        mgr.create_scope("session-2", "did:mesh:agent-2", isolation_level=IsolationLevel.READ_COMMITTED)
+        mgr.create_scope("session-3", "did:mesh:agent-3", isolation_level=IsolationLevel.READ_COMMITTED)
+        assert mgr.grant_cross_session_access("session-1", "session-2") is True
+
+        # Valid granted access
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-2/data.json")
+            is True
+        )
+        # Attempt to traverse out of granted session into session-3
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-2/../session-3/secret.json")
+            is False
+        )
+        # Sibling collision on granted session
+        assert (
+            mgr.check_access("session-1", "/var/agt/sessions/session-2-attacker/data.json")
+            is False
+        )

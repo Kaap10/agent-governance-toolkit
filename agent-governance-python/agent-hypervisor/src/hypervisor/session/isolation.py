@@ -10,9 +10,25 @@ sessions' data requires explicit capability grants.
 
 from __future__ import annotations
 
+import posixpath
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import PurePosixPath
+
+
+def _is_path_contained(target_path: str, base_directory: str) -> bool:
+    """Check if target_path is within base_directory after collapsing relative segments.
+
+    Fails closed (returns False) for non-absolute paths or malformed inputs.
+    """
+    try:
+        if not posixpath.isabs(target_path):
+            return False
+        norm_target = posixpath.normpath(target_path)
+        norm_base = posixpath.normpath(base_directory)
+        return norm_target == norm_base or norm_target.startswith(norm_base.rstrip("/") + "/")
+    except (ValueError, TypeError):
+        return False
 
 
 class IsolationLevel(str, Enum):
@@ -73,16 +89,15 @@ class SessionScope:
         Returns:
             True if the path is within the session scope or a granted scope.
         """
-        normalized = str(PurePosixPath(path))
         # Always allow access within own working directory
-        if normalized.startswith(self.working_directory):
+        if _is_path_contained(path, self.working_directory):
             return True
 
         # Check granted session access (READ_COMMITTED only)
         if self.isolation_level == IsolationLevel.READ_COMMITTED:
             for granted_id in self.granted_sessions:
                 granted_dir = str(PurePosixPath(self.base_path) / granted_id)
-                if normalized.startswith(granted_dir):
+                if _is_path_contained(path, granted_dir):
                     return True
 
         return False
