@@ -1,7 +1,15 @@
-
-
-
-
+# --- Conversation guardian Unicode normalization terms ---
+Bidi
+Halfwidth
+homoglyphs
+ignorables
+invisibles
+leetspeak
+LHMQ
+maketrans
+midword
+NFKD
+Upadhyay
 
 # --- ACS / crypto terms ---
 # --- Additional West/North Africa terms flagged by cspell ---
@@ -9,6 +17,9 @@
 # --- UK regulatory policy terms ---
 # --- CloudEvents / signed audit-event terms ---
 # --- Docker / BuildKit toolchain terms ---
+Crumm
+Gummadi
+Prayag
 struction
 
 # --- Documentation site and ACS integration terms ---
@@ -375,6 +386,7 @@ artefacts
 arun
 asctime
 asdict
+askpass
 asname
 aspnet
 astimezone
@@ -424,6 +436,7 @@ carloshvp
 carryforward
 carveout
 casefold
+cautogen
 cdylib
 cedarling
 cedarpy
@@ -566,6 +579,7 @@ finalizer
 findall
 finditer
 findtext
+findutils
 flatbuffer
 flate
 flowise
@@ -623,6 +637,7 @@ healthz
 helpdesk
 hexdigest
 hexdigit
+hhost
 hitl
 hkdf
 hostnames
@@ -698,6 +713,7 @@ langgenius
 lastgroup
 lawcontinue
 levelname
+llamaindexer
 lookahead
 lookaround
 lookarounds
@@ -742,6 +758,7 @@ matplotlib
 maturin
 maxlen
 maxsplit
+mcpython
 memswap
 metavar
 mget
@@ -842,6 +859,7 @@ openAPIV3Schema
 opencode
 openpolicyagent
 openshell
+oprtx
 organisation
 organisational
 organisations
@@ -893,6 +911,7 @@ prependpath
 pretool
 privatelink
 processcontainer
+procs
 promptdefense
 promptinjectiondetector
 proofblob
@@ -901,6 +920,7 @@ psmodules
 psour
 purelib
 pyatr
+pyautogen
 pycache
 pyclass
 pyjwt
@@ -1045,6 +1065,7 @@ socsec
 softmax
 spacy
 spanid
+spawnp
 specversion
 spellcheck
 spellchecking
@@ -1138,6 +1159,7 @@ urlopen
 urlparse
 urlsafe
 urlunparse
+uroot
 usemanagedidentity
 userinfo
 usize
@@ -1328,3 +1350,10 @@ amqp
 amqps
 rediss
 xoxe
+OCSF
+ocsf
+NDJSON
+ndjson
+dataschema
+disp
+gitops
